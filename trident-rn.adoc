@@ -1,0 +1,86 @@
+---
+sidebar: sidebar 
+permalink: trident-rn.html 
+keywords: 'what"s new, new features, enhancements, known issues, resolved issues, troubleshooting' 
+summary: NetApp verbessert seine Produkte und Services kontinuierlich. Im Folgenden finden Sie einige der neuesten Funktionen, Verbesserungen und Bugfixes in der neuesten Version von Astra Trident. 
+---
+= Versionshinweise
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+Versionshinweise liefern Informationen zu den neuen Funktionen, Verbesserungen und Bugfixes in der aktuellen Version von Astra Trident.
+
+
+WARNING: Der `tridentctl` Binary for Linux, die in der ZIP-Datei des Installationsprogramms bereitgestellt wird, ist die getestete und unterstützte Version. Beachten Sie, dass der `macos` Binärdateien sind im enthalten `/extras` Ein Teil der ZIP-Datei wird nicht getestet oder unterstützt.
+
+
+
+== Was ist neu
+
+NetApp verbessert seine Produkte und Services kontinuierlich. Im Folgenden finden Sie einige der neuesten Funktionen von Astra Trident:
+
+
+
+=== Astra Trident 21.07.02
+
+* Das Problem wurde behoben, bei dem Klone von XFS-Volumes nicht auf demselben Node wie das Quell-Volume gemountet werden konnten.
+
+
+
+
+==== Vorgestellt Werden
+
+* Zusätzliche Unterstützung für Kubernetes 1.22
+* Trident Operator und Helm Chart wurde für die Zusammenarbeit mit Kubernetes 1.22 aktiviert.
+
+
+Siehe https://github.com/NetApp/trident/releases["Astra Trident GitHub"^] Finden Sie weitere Informationen.
+
+
+
+=== Astra Trident 21.07.01
+
+* Problem mit dem benutzerdefinierten YAML-Installationsprogramm mit einem anderen Bild wurde behoben.
+* Problem bei der Berechnung der Snapshot-Größe behoben.
+
+
+Siehe https://github.com/NetApp/trident/releases/tag/v21.07.1["Astra Trident GitHub"^] Finden Sie weitere Informationen.
+
+
+
+=== Astra Trident 21.07
+
+Astra Trident 21.07.0 ist nicht zum Download verfügbar*. Änderungen wurden auf eingeführt `snapshotReserve` Mit Version 21.07.0 kann CSI entstehen `VolumeSnapshots` Nicht verwendbar für die Erstellung von PersistenzVolumeClaim(s).
+
+Wenn Sie bereits auf Version 21.07.0 aktualisiert haben, wird empfohlen, die neu erstellte Version zu löschen `VolumeSnapshots` (Mit Version 21.07.0 bereitgestellt) und Downgrade auf die vorherige Version.
+
+Siehe https://github.com/NetApp/trident/releases/tag/v21.07.0["Astra Trident GitHub"^] Finden Sie weitere Informationen.
+
+
+
+== Bekannte Probleme
+
+Bekannte Probleme erkennen Probleme, die eine erfolgreiche Verwendung des Produkts verhindern könnten.
+
+* Astra Trident erzwingt jetzt ein Leereinschub `fsType` (`fsType=""`) Für Volumen, die nicht die haben `fsType` Festgelegt in ihrer StorageClass. Bei der Arbeit mit Kubernetes 1.17 oder höher unterstützt Trident das Ausgeben eines Leerzeichen `fsType` Für NFS-Volumes. Für iSCSI-Volumes müssen Sie die festlegen `fsType` Auf Ihrer StorageClass bei der Durchsetzung eines `fsGroup` Verwenden eines Sicherheitskontexts.
+* Wenn Sie ein Backend über mehrere Astra Trident Instanzen hinweg verwenden, sollte jede Back-End-Konfigurationsdatei ein anderes haben `storagePrefix` Für ONTAP-Back-Ends verwenden Sie einen anderen Wert `TenantName` Für SolidFire Back-Ends. Astra Trident kann Volumes nicht erkennen, die andere Instanzen von Astra Trident erstellt haben. Es ist erfolgreich, ein vorhandenes Volume auf ONTAP- oder SolidFire-Back-Ends zu erstellen, da Astra Trident die Volume-Erstellung als einen idempotenten Vorgang behandelt. Wenn `storagePrefix` Oder `TenantName` Unterscheiden sich nicht, es können Namenskonflikte bei Volumes bestehen, die auf demselben Backend erstellt wurden.
+* Bei der Installation von Astra Trident (mit `tridentctl` Oder dem Trident Operator) und mit `tridentctl` Für das Management von Astra Trident sollten Sie die sicherstellen `KUBECONFIG` Umgebungsvariable wird festgelegt. Dies ist erforderlich, um für den Kubernetes-Cluster anzugeben `tridentctl` Sollten gegenarbeiten. Bei der Arbeit mit mehreren Kubernetes-Umgebungen sollten Sie sicherstellen, dass die `KUBECONFIG` Die Datei wird genau stammt.
+* Um Online-Speicherplatzrückgewinnung für iSCSI PVS durchzuführen, muss das zugrunde liegende Betriebssystem auf dem Worker-Node möglicherweise Mount-Optionen an das Volume übergeben werden. Dies gilt für RHEL/RedHat CoreOS Instanzen, die die benötigen `discard` https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/managing_file_systems/discarding-unused-blocks_managing-file-systems["Mount-Option"^]; Stellen Sie sicher, dass die MountOption von der Karte in Ihrem enthalten ist[`StorageClass`^] unterstützt das Online-Blockabwerfen.
+* Wenn für den Kubernetes Cluster mehr als eine Instanz von Astra Trident zur Verfügung steht, kann Astra Trident nicht mit anderen Instanzen kommunizieren und kann nicht andere Volumes ermitteln, die sie erstellt haben. Dies führt zu einem unerwarteten und falschen Verhalten, wenn mehrere Instanzen innerhalb eines Clusters ausgeführt werden. Astra Trident sollte nur eine Instanz pro Kubernetes Cluster geben.
+* Bei Astra Trident-basiert `StorageClass` Die Objekte werden aus Kubernetes gelöscht, während Astra Trident offline ist, entfernt Astra Trident nicht die entsprechenden Storage-Klassen aus seiner Datenbank, wenn sie wieder online kommt. Sie sollten diese Speicherklassen mit löschen `tridentctl` Oder DIE REST API.
+* Wenn ein Benutzer ein von Astra Trident bereitgestelltes PV löscht, bevor das entsprechende PVC gelöscht wird, löscht Astra Trident nicht automatisch das Back-Volume. Sie sollten die Lautstärke über entfernen `tridentctl` Oder DIE REST API.
+* ONTAP kann nicht gleichzeitig mehr als ein FlexGroup gleichzeitig bereitstellen, es sei denn, der Satz der Aggregate ist auf jede Bereitstellungsanforderung beschränkt.
+* Bei der Verwendung von Astra Trident über IPv6 sollten Sie angeben `managementLIF` Und `dataLIF` In der Back-End-Definition in eckigen Klammern. Beispiel: ``[fd20:8b1e:b258:2000:f816:3eff:feec:0]``.
+* Wenn Sie das verwenden `solidfire-san` Treiber mit OpenShift 4.5, stellen Sie sicher, dass die zugrunde liegenden Worker-Knoten MD5 als CHAP-Authentifizierungsalgorithmus verwenden.
+
+
+
+
+== Weitere Informationen
+
+* https://github.com/NetApp/trident["Astra Trident GitHub"^]
+* https://netapp.io/persistent-storage-provisioner-for-kubernetes/["Astra Trident Blogs"^]
+

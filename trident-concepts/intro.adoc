@@ -1,0 +1,61 @@
+---
+sidebar: sidebar 
+permalink: trident-concepts/intro.html 
+keywords: product overview, astra trident 
+summary: Die Bereitstellung in Astra Trident besteht aus zwei Hauptphasen. In der ersten Phase wird eine Speicherklasse mit einem Satz geeigneter Back-End-Speicherpools verknüpft. Diese werden vor der Bereitstellung als notwendig vorbereitet. Die zweite Phase umfasst die Volume-Erstellung selbst und erfordert die Auswahl eines Speicherpools aus den Storage-Klassen des ausstehenden Volume. 
+---
+= Einführung in Astra Trident
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+Astra Trident ist ein vollständig von NetApp unterstütztes Open-Source-Projekt. Es wurde von Grund auf dafür konzipiert, die Persistenzanforderungen Ihrer Container-Applikationen mithilfe von branchenüblichen Schnittstellen wie dem Container-Storage-Interface (CSI) zu erfüllen.
+
+Astra Trident wird in Kubernetes Clustern als Pods implementiert und bietet dynamische Storage-Orchestrierungs-Services für Ihre Kubernetes-Workloads. Es ermöglicht Ihren Container-Applikationen, persistenten Storage schnell und einfach aus dem breiten Portfolio von NetApp zu nutzen. Dazu gehören ONTAP (AFF/FAS/Select/Cloud/Amazon FSX für NetApp ONTAP), Element Software (NetApp HCI/SolidFire) sowie der Azure NetApp Files Service, Cloud Volumes Service auf Google Cloud und Cloud Volumes Service auf AWS.
+
+Astra Trident ist außerdem eine grundlegende Technologie für den NetApp Astra. Er eignet sich für Ihre Datensicherung, Disaster Recovery, Portabilität und Migration von Kubernetes-Workloads und nutzt die branchenführende Datenmanagement-Technologie von NetApp für Snapshots, Backups, Replizierung und Klonen.
+
+
+
+== Unterstützte Kubernetes-Cluster-Architekturen
+
+Astra Trident wird durch die folgenden Kubernetes-Architekturen unterstützt:
+
+[cols="3*"]
+|===
+| Kubernetes-Cluster-Architekturen | Unterstützt | Standardinstallation 
+
+
+| Ein Master Computing | Ja.  a| 
+Ja.
+
+
+
+| Mehrere Master-Computer und Computing-Ressourcen | Ja.  a| 
+Ja.
+
+
+
+| Master, `etcd`, Datenverarbeitung | Ja.  a| 
+Ja.
+
+
+
+| Master, Infrastruktur, Computing | Ja.  a| 
+Ja.
+
+|===
+
+
+== Was ist Astra?
+
+Astra erleichtert Unternehmen das Management, die Sicherung und das Verschieben ihrer datenintensiven Container-Workloads, die auf Kubernetes ausgeführt werden, innerhalb der Public Cloud und vor Ort. Astra stellt persistenten Container-Storage mithilfe von Astra Trident bereit. Das bewährte und umfangreiche Storage-Portfolio von NetApp umfasst sowohl Public Clouds als auch On-Premises. Außerdem bietet es umfassende erweiterte, applikationsspezifische Datenmanagementfunktionen wie Snapshot, Backup und Wiederherstellung, Aktivitätsprotokolle und aktives Klonen für Datensicherung, Disaster/Daten-Recovery, Datenaudits und Migrationsanwendungsfälle für Kubernetes-Workloads.
+
+In der Astra-Dokumentation finden Sie alles, was Sie für den Einstieg benötigen. Melden Sie sich auf der Astra-Seite für eine kostenlose Testversion an.
+
+* https://docs.netapp.com/us-en/astra/get-started/intro.html["Einführung in den Astra Control Service"^]
+* https://docs.netapp.com/us-en/astra-automation/get-started/before_get_started.html["Erste Schritte mit der Astra API"^]
+* https://docs.netapp.com/us-en/astra-control-center/concepts/intro.html["Erfahren Sie mehr über Astra Control Center"^]
+

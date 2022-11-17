@@ -1,0 +1,111 @@
+---
+sidebar: sidebar 
+permalink: trident-docker/prereqs-docker.html 
+keywords: deploy, astra trident, docker, trident for docker, nfs, iscsi, protcol, nfs protocol, iscsi protocol, configure host, host config 
+summary: Bevor Sie Astra Trident implementieren können, müssen Sie die erforderlichen Protokollvoraussetzungen auf Ihrem Host installieren und konfigurieren. 
+---
+= Voraussetzungen für die Bereitstellung
+:hardbreaks:
+:allow-uri-read: 
+:icons: font
+:imagesdir: ../media/
+
+
+Bevor Sie Astra Trident implementieren können, müssen Sie die erforderlichen Protokollvoraussetzungen auf Ihrem Host installieren und konfigurieren.
+
+* Stellen Sie sicher, dass Ihre Implementierung alle Anforderungen erfüllt link:../trident-get-started/requirements.html["Anforderungen"^].
+* Vergewissern Sie sich, dass eine unterstützte Version von Docker installiert ist. Wenn Ihre Docker Version veraltet ist, https://docs.docker.com/engine/install/["Installieren oder aktualisieren Sie sie"^].
+
+
+[listing]
+----
+docker --version
+----
+* Vergewissern Sie sich, dass die Protokollvoraussetzungen auf Ihrem Host installiert und konfiguriert sind:
+
+
+[cols="3*"]
+|===
+| Protokoll | Betriebssystem | Befehle 
+
+
+| NFS  a| 
+RHEL/CentOS
+ a| 
+`sudo yum install -y nfs-utils`
+
+
+
+| NFS  a| 
+Ubuntu/Debian
+ a| 
+`sudo apt-get install -y nfs-common`
+
+
+
+| ISCSI  a| 
+RHEL/CentOS
+ a| 
+. Installieren Sie die folgenden Systempakete:
++
+`sudo yum install -y lsscsi iscsi-initiator-utils sg3_utils device-mapper-multipath`
+
+. Starten Sie den Multipathing-Daemon:
++
+`sudo mpathconf --enable --with_multipathd y`
+
+. Stellen Sie das sicher `iscsid` Und `multipathd` Sind aktiviert und läuft:
++
+`sudo systemctl enable iscsid multipathd`
+`sudo systemctl start iscsid multipathd`
+
+. Ermitteln Sie die iSCSI-Ziele:
++
+`sudo iscsiadm -m discoverydb -t st -p <DATA_LIF_IP> --discover`
+
+. Melden Sie sich bei den erkannten iSCSI-Zielen an:
++
+`sudo iscsiadm -m node -p <DATA_LIF_IP> --login`
+
+. Aktivieren und starten `iscsi`:
++
+`sudo systemctl enable iscsi`
+`sudo systemctl start iscsi`
+
+
+
+
+
+| ISCSI  a| 
+Ubuntu/Debian
+ a| 
+. Installieren Sie die folgenden Systempakete:
++
+`sudo apt-get install -y open-iscsi lsscsi sg3-utils multipath-tools scsitools`
+
+. Multipathing aktivieren:
++
+`sudo tee /etc/multipath.conf <<-'EOF'
+defaults {
+    user_friendly_names yes
+    find_multipaths yes
+}
+EOF
+sudo service multipath-tools restart`
+
+. Stellen Sie das sicher `iscsid` Und `multipathd` Laufen:
++
+`sudo service open-iscsi start
+sudo service multipath-tools start`
+
+. Ermitteln Sie die iSCSI-Ziele:
++
+`sudo iscsiadm -m discoverydb -t st -p <DATA_LIF_IP> --discover`
+
+. Melden Sie sich bei den erkannten iSCSI-Zielen an:
++
+`sudo iscsiadm -m node -p <DATA_LIF_IP> --login`
+
+
+
+|===
